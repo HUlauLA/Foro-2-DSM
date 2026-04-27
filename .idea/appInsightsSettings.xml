@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.controldegastos.app" />
+                  <option name="mobileSdkAppId" value="1:646039353432:android:564fc5873b64d28610b22d" />
+                  <option name="projectId" value="control-de-gastos-67892" />
+                  <option name="projectNumber" value="646039353432" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
