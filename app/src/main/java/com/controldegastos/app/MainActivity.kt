@@ -12,11 +12,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.controldegastos.app.ui.theme.ControlDeGastosTheme
+import android.content.Intent
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        val intent = Intent(this, HomeActivity::class.java)
+        startActivity(intent)
+        finish()
         setContent {
             ControlDeGastosTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
