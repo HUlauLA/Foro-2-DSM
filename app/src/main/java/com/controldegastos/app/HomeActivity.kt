@@ -16,14 +16,14 @@ class HomeActivity : AppCompatActivity() {
         val btnHistorial = findViewById<Button>(R.id.btnHistorial)
 
         val nombre = "Usuario"
-        txtSaludo.text = "Bienvenida, $nombre 👋"
+        txtSaludo.text = "Bienvenida, $nombre"
 
         btnAgregar.setOnClickListener {
-            // Aquí luego va pantalla de agregar gasto
+            // Aquí luego abriremos otra pantalla
         }
 
         btnHistorial.setOnClickListener {
-            // Aquí luego va historial
+            // Aquí luego veremos historial
         }
     }
 }
