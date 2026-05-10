@@ -1,4 +1,4 @@
-}package com.controldegastos.app.ui.navigation
+package com.controldegastos.app.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
