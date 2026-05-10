@@ -13,6 +13,7 @@ import com.controldegastos.app.ui.theme.ControlDeGastosTheme
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
 
         enableEdgeToEdge()
@@ -21,16 +22,15 @@ class MainActivity : ComponentActivity() {
 
             ControlDeGastosTheme {
 
-                // Control de pantallas
                 var pantallaActual by remember {
                     mutableStateOf("ingreso")
                 }
 
-                Scaffold { paddingValues ->
+                Scaffold {
 
                     when (pantallaActual) {
 
-                        // Pantalla ingreso de gastos
+                        // Pantalla ingreso
                         "ingreso" -> PantallaIngresoGastos(
 
                             irHistorial = {
