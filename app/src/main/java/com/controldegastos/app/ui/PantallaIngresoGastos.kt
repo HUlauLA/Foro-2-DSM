@@ -1,20 +1,20 @@
 package com.controldegastos.app.ui
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.text.KeyboardOptions
+import com.controldegastos.app.model.Gasto
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.controldegastos.app.model.Gasto
 
 @Composable
 fun PantallaIngresoGastos(
     irHistorial: () -> Unit
-)
+) {
 
     // Firebase
     val db = FirebaseFirestore.getInstance()
@@ -55,7 +55,9 @@ fun PantallaIngresoGastos(
             value = monto,
             onValueChange = { monto = it },
             label = { Text("Monto") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number
+            ),
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -91,6 +93,7 @@ fun PantallaIngresoGastos(
                     fecha.isBlank() ||
                     categoria.isBlank()
                 ) {
+
                     mensaje = "Complete todos los campos"
                     return@Button
                 }
@@ -107,7 +110,7 @@ fun PantallaIngresoGastos(
                     .add(gasto)
                     .addOnSuccessListener {
 
-                        mensaje = "Gasto guardado correctamente "
+                        mensaje = "Gasto guardado correctamente"
 
                         nombreGasto = ""
                         monto = ""
@@ -115,16 +118,29 @@ fun PantallaIngresoGastos(
                         categoria = ""
                     }
                     .addOnFailureListener {
-                        mensaje = "Error al guardar "
+
+                        mensaje = "Error al guardar"
                     }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
+
             Text("Guardar gasto")
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(text = mensaje)
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Ir historial
+        Button(
+            onClick = { irHistorial() },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+
+            Text("Ver historial")
+        }
     }
 }
