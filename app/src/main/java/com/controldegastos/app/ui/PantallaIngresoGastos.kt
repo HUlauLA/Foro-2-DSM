@@ -12,7 +12,9 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.controldegastos.app.model.Gasto
 
 @Composable
-fun PantallaIngresoGastos() {
+fun PantallaIngresoGastos(
+    irHistorial: () -> Unit
+)
 
     // Firebase
     val db = FirebaseFirestore.getInstance()
