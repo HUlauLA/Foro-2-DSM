@@ -7,30 +7,37 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.controldegastos.app.model.Gasto
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.controldegastos.app.model.Gasto
 
 @Composable
 fun PantallaHistorialGastos(
     volver: () -> Unit
 ) {
 
+    // Firebase
     val db = FirebaseFirestore.getInstance()
     val auth = FirebaseAuth.getInstance()
 
-    var listaGastos by remember { mutableStateOf(listOf<Gasto>()) }
+    // Lista de gastos
+    var listaGastos by remember {
+        mutableStateOf(listOf<Gasto>())
+    }
+
+    // Total mensual
+    val totalMensual = listaGastos.sumOf { it.monto }
 
     val userId = auth.currentUser?.uid
 
-    // Cargar datos desde Firebase
+    // Cargar gastos desde Firebase
     LaunchedEffect(userId) {
 
         if (userId != null) {
 
             db.collection("gastos")
                 .whereEqualTo("userId", userId)
-                .addSnapshotListener { snapshot, _ ->
+                .addSnapshotListener { snapshot, error ->
 
                     if (snapshot != null) {
 
@@ -51,15 +58,26 @@ fun PantallaHistorialGastos(
             .padding(16.dp)
     ) {
 
+        // Título
         Text(
             text = "Historial de Gastos",
             style = MaterialTheme.typography.headlineMedium
         )
 
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Total mensual
+        Text(
+            text = "Total mensual: $$totalMensual",
+            style = MaterialTheme.typography.titleLarge
+        )
+
         Spacer(modifier = Modifier.height(16.dp))
 
         // Lista de gastos
-        LazyColumn {
+        LazyColumn(
+            modifier = Modifier.weight(1f)
+        ) {
 
             items(listaGastos) { gasto ->
 
@@ -69,9 +87,16 @@ fun PantallaHistorialGastos(
                         .padding(vertical = 6.dp)
                 ) {
 
-                    Column(modifier = Modifier.padding(12.dp)) {
+                    Column(
+                        modifier = Modifier.padding(12.dp)
+                    ) {
 
-                        Text(text = gasto.nombre, style = MaterialTheme.typography.titleMedium)
+                        Text(
+                            text = gasto.nombre,
+                            style = MaterialTheme.typography.titleMedium
+                        )
+
+                        Spacer(modifier = Modifier.height(4.dp))
 
                         Text(text = "Monto: $${gasto.monto}")
 
@@ -81,6 +106,16 @@ fun PantallaHistorialGastos(
                     }
                 }
             }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Botón volver
+        Button(
+            onClick = { volver() },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Volver")
         }
     }
 }
