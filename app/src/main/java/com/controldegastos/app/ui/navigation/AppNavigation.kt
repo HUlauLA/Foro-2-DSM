@@ -1,30 +1,41 @@
-package com.example.tugastoapp.ui.navigation
+}package com.controldegastos.app.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.tugastoapp.ui.screens.PantallaLogin
-import com.example.tugastoapp.ui.screens.PantallaRegistro
-import com.example.tugastoapp.ui.screens.PantallaPrincipal
+import com.controldegastos.app.ui.PantallaLogin
+import com.controldegastos.app.ui.PantallaRegistro
+import com.controldegastos.app.ui.PantallaPrincipal
 
 @Composable
 fun AppNavigation(navController: NavHostController) {
+
     NavHost(
         navController = navController,
         startDestination = "login"
     ) {
 
+        // LOGIN
         composable("login") {
-            PantallaLogin(navController)
+            PantallaLogin(
+                irARegistro = { navController.navigate("registro") },
+                irAInicio = { navController.navigate("pantallaPrincipal") }
+            )
         }
 
+        // REGISTRO
         composable("registro") {
-            PantallaRegistro(navController)
+            PantallaRegistro(
+                volverALogin = { navController.navigate("login") }
+            )
         }
 
+        // PANTALLA PRINCIPAL
         composable("pantallaPrincipal") {
-            PantallaPrincipal(navController)
+            PantallaPrincipal(
+                volver = { navController.popBackStack() }
+            )
         }
     }
 }
