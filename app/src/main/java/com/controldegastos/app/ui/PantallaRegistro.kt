@@ -7,37 +7,37 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 @Composable
 fun PantallaRegistro(
-    irLogin: () -> Unit
+    volverALogin: () -> Unit
 ) {
 
-    // Firebase
     val auth = FirebaseAuth.getInstance()
+    val db = FirebaseFirestore.getInstance()
 
-    // Estados
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmarPassword by remember { mutableStateOf("") }
-    var mensaje by remember { mutableStateOf("") }
+
+    var mensajeError by remember { mutableStateOf<String?>(null) }
+    var mensajeExito by remember { mutableStateOf<String?>(null) }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center
+            .padding(16.dp)
     ) {
 
-        // Título
         Text(
-            text = "Registro de Usuario",
+            text = "Crear Cuenta",
             style = MaterialTheme.typography.headlineMedium
         )
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Correo
+        // Email
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
@@ -52,8 +52,8 @@ fun PantallaRegistro(
             value = password,
             onValueChange = { password = it },
             label = { Text("Contraseña") },
-            visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            visualTransformation = PasswordVisualTransformation()
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -63,8 +63,8 @@ fun PantallaRegistro(
             value = confirmarPassword,
             onValueChange = { confirmarPassword = it },
             label = { Text("Confirmar contraseña") },
-            visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            visualTransformation = PasswordVisualTransformation()
         )
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -73,66 +73,56 @@ fun PantallaRegistro(
         Button(
             onClick = {
 
-                // Validar campos vacíos
-                if (
-                    email.isBlank() ||
-                    password.isBlank() ||
-                    confirmarPassword.isBlank()
-                ) {
-
-                    mensaje = "Complete todos los campos"
-                    return@Button
-                }
-
-                // Validar contraseñas
                 if (password != confirmarPassword) {
-
-                    mensaje = "Las contraseñas no coinciden"
+                    mensajeError = "Las contraseñas no coinciden"
                     return@Button
                 }
 
-                // Validar longitud mínima
-                if (password.length < 6) {
-
-                    mensaje = "La contraseña debe tener al menos 6 caracteres"
-                    return@Button
-                }
-
-                // Registrar usuario
                 auth.createUserWithEmailAndPassword(email, password)
-                    .addOnSuccessListener {
+                    .addOnSuccessListener { result ->
 
-                        mensaje = "Usuario registrado correctamente"
+                        val userId = result.user?.uid ?: ""
 
-                        // Ir al login
-                        irLogin()
+                        // Guardar datos básicos del usuario en Firestore
+                        val datosUsuario = hashMapOf(
+                            "email" to email,
+                            "userId" to userId
+                        )
+
+                        db.collection("usuarios").document(userId)
+                            .set(datosUsuario)
+
+                        mensajeExito = "Cuenta creada exitosamente"
+                        mensajeError = null
                     }
-                    .addOnFailureListener {
-
-                        mensaje = "Error: ${it.message}"
+                    .addOnFailureListener { e ->
+                        mensajeError = e.localizedMessage
                     }
-
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-
-            Text("Registrarse")
+            Text("Registrarme")
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
-        // Mensaje
-        Text(text = mensaje)
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Ir al login
+        // Volver a login
         TextButton(
-            onClick = { irLogin() },
+            onClick = { volverALogin() },
             modifier = Modifier.fillMaxWidth()
         ) {
+            Text("Ya tengo una cuenta")
+        }
 
-            Text("¿Ya tienes cuenta? Inicia sesión")
+        // Mensajes
+        mensajeError?.let {
+            Spacer(modifier = Modifier.height(12.dp))
+            Text(text = it, color = MaterialTheme.colorScheme.error)
+        }
+
+        mensajeExito?.let {
+            Spacer(modifier = Modifier.height(12.dp))
+            Text(text = it, color = MaterialTheme.colorScheme.primary)
         }
     }
 }
