@@ -10,6 +10,8 @@ import androidx.compose.ui.unit.dp
 import com.controldegastos.app.model.Gasto
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import java.text.SimpleDateFormat
+import java.util.*
 
 @Composable
 fun PantallaHistorialGastos(
@@ -20,13 +22,10 @@ fun PantallaHistorialGastos(
     val db = FirebaseFirestore.getInstance()
     val auth = FirebaseAuth.getInstance()
 
-    // Lista de gastos
+    // Lista de gastos completa
     var listaGastos by remember {
         mutableStateOf(listOf<Gasto>())
     }
-
-    // Total mensual
-    val totalMensual = listaGastos.sumOf { it.monto }
 
     val userId = auth.currentUser?.uid
 
@@ -42,7 +41,6 @@ fun PantallaHistorialGastos(
                     if (snapshot != null) {
 
                         val gastos = snapshot.documents.mapNotNull { doc ->
-
                             doc.toObject(Gasto::class.java)
                         }
 
@@ -52,6 +50,22 @@ fun PantallaHistorialGastos(
         }
     }
 
+    // -----------------------------
+    // FILTRO DEL MES ACTUAL
+    // -----------------------------
+    val mesActual = SimpleDateFormat("MM", Locale.getDefault()).format(Date())
+
+    val gastosDelMes = listaGastos.filter { gasto ->
+        try {
+            gasto.fecha.substring(3, 5) == mesActual
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    val totalMensual = gastosDelMes.sumOf { it.monto }
+
+    // UI
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -74,12 +88,12 @@ fun PantallaHistorialGastos(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Lista de gastos
+        // Lista filtrada por mes
         LazyColumn(
             modifier = Modifier.weight(1f)
         ) {
 
-            items(listaGastos) { gasto ->
+            items(gastosDelMes) { gasto ->
 
                 Card(
                     modifier = Modifier
@@ -99,9 +113,7 @@ fun PantallaHistorialGastos(
                         Spacer(modifier = Modifier.height(4.dp))
 
                         Text(text = "Monto: $${gasto.monto}")
-
                         Text(text = "Categoría: ${gasto.categoria}")
-
                         Text(text = "Fecha: ${gasto.fecha}")
                     }
                 }
