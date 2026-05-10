@@ -41,7 +41,7 @@ android {
 
 dependencies {
 
-
+classpath 'com.google.gms:google-services:4.4.1'
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.compose.ui:ui:1.6.0")
