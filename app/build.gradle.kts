@@ -72,3 +72,4 @@ implementation 'com.google.firebase:firebase-firestore'
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 }
+apply plugin: 'com.google.gms.google-services'
