@@ -1,30 +1,21 @@
 pluginManagement {
     repositories {
-        google {
-            content {
-                includeGroupByRegex("com\\.android.*")
-                includeGroupByRegex("com\\.google.*")
-                includeGroupByRegex("androidx.*")
-            }
-        }
+        google()        //  Necesario para Android y Firebase
         mavenCentral()
         gradlePluginPortal()
     }
+
+    plugins {
+        id("com.android.application") version "8.5.0"
+        id("org.jetbrains.kotlin.android") version "1.9.24"
+        id("com.google.gms.google-services") version "4.4.1"
+    }
 }
-plugins {
-  
-id("com.google.gms.google-services") version "4.4.1" apply false
-}
-
-
-
-
-
 
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
-        google()
+        google()        //  IMPORTANTE
         mavenCentral()
     }
 }
