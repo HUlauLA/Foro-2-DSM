@@ -3,7 +3,7 @@ package com.controldegastos.app
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import com.controldegastos.app.navigation.AppNavigation
+import com.controldegastos.app.ui.navigation.AppNavigation
 
 class MainActivity : ComponentActivity() {
 
