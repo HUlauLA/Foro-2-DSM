@@ -3,24 +3,15 @@ package com.controldegastos.app
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.navigation.compose.rememberNavController
-import com.controldegastos.app.ui.navigation.AppNavigation
-import com.controldegastos.app.ui.theme.ControlDeGastosTheme
+import com.controldegastos.app.navigation.AppNavigation
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
-            ControlDeGastosTheme {
-                Surface(
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    val navController = rememberNavController()
-                    AppNavigation(navController)
-                }
-            }
+            AppNavigation()
         }
     }
 }
