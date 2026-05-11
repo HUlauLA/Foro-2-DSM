@@ -5,40 +5,43 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 
 @Composable
-fun PantallaPrincipal(
-    irIngreso: () -> Unit,
-    irHistorial: () -> Unit
-) {
+fun PantallaPrincipal(navController: NavController) {
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(20.dp),
+        verticalArrangement = Arrangement.Center
     ) {
 
         Text(
-            text = "Menú Principal",
+            text = "Control de Gastos",
             style = MaterialTheme.typography.headlineMedium
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
         Button(
-            onClick = irIngreso,
+            onClick = {
+                navController.navigate("ingreso")
+            },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Agregar gasto")
+            Text("Agregar Gasto")
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         Button(
-            onClick = irHistorial,
+            onClick = {
+                navController.navigate("historial")
+            },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Ver historial")
+            Text("Ver Historial")
         }
     }
 }
