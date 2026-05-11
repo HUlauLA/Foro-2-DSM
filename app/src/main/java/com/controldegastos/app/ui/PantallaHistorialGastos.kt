@@ -7,116 +7,82 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.controldegastos.app.model.Gasto
+import androidx.navigation.NavController
+import com.controldegastos.app.modelo.Gasto
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 @Composable
-fun PantallaHistorialGastos(
-    volver: () -> Unit
-) {
+fun PantallaHistorialGastos(navController: NavController) {
 
-    // Firebase
     val db = FirebaseFirestore.getInstance()
     val auth = FirebaseAuth.getInstance()
 
-    // Lista gastos
     var listaGastos by remember {
         mutableStateOf(listOf<Gasto>())
     }
 
-    // Total mensual
-    val totalMensual = listaGastos.sumOf { it.monto }
+    LaunchedEffect(Unit) {
 
-    val userId = auth.currentUser?.uid
+        db.collection("gastos")
+            .whereEqualTo("userId", auth.currentUser?.uid)
+            .get()
+            .addOnSuccessListener { result ->
 
-    // Cargar datos
-    LaunchedEffect(userId) {
+                val lista = mutableListOf<Gasto>()
 
-        if (userId != null) {
-
-            db.collection("gastos")
-                .whereEqualTo("userId", userId)
-                .addSnapshotListener { snapshot, _ ->
-
-                    if (snapshot != null) {
-
-                        val gastos = snapshot.documents.mapNotNull { doc ->
-
-                            doc.toObject(Gasto::class.java)
-                        }
-
-                        listaGastos = gastos
-                    }
+                for (document in result) {
+                    val gasto = document.toObject(Gasto::class.java)
+                    lista.add(gasto)
                 }
-        }
+
+                listaGastos = lista
+            }
     }
+
+    val total = listaGastos.sumOf { it.monto }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(20.dp)
     ) {
 
-        // Título
         Text(
             text = "Historial de Gastos",
             style = MaterialTheme.typography.headlineMedium
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
-        // Total
         Text(
-            text = "Total mensual: $$totalMensual",
+            text = "Total Mensual: $$total",
             style = MaterialTheme.typography.titleLarge
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
-        // Lista
-        LazyColumn(
-            modifier = Modifier.weight(1f)
-        ) {
+        LazyColumn {
 
             items(listaGastos) { gasto ->
 
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 6.dp)
+                        .padding(8.dp)
                 ) {
 
                     Column(
-                        modifier = Modifier.padding(12.dp)
+                        modifier = Modifier.padding(16.dp)
                     ) {
 
-                        Text(
-                            text = gasto.nombre,
-                            style = MaterialTheme.typography.titleMedium
-                        )
-
-                        Spacer(modifier = Modifier.height(4.dp))
-
-                        Text(text = "Monto: $${gasto.monto}")
-
-                        Text(text = "Categoría: ${gasto.categoria}")
-
-                        Text(text = "Fecha: ${gasto.fecha}")
+                        Text("Nombre: ${gasto.nombre}")
+                        Text("Monto: $${gasto.monto}")
+                        Text("Categoría: ${gasto.categoria}")
+                        Text("Fecha: ${gasto.fecha}")
                     }
                 }
             }
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Botón volver
-        Button(
-            onClick = { volver() },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-
-            Text("Volver")
         }
     }
 }
