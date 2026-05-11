@@ -1,4 +1,4 @@
-package com.controldegastos.app.model
+package com.controldegastos.app.modelo
 
 data class Gasto(
     val nombre: String = "",
