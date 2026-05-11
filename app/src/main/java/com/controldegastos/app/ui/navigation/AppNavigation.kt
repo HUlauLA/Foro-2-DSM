@@ -1,62 +1,38 @@
-package com.controldegastos.app.ui.navigation
+package com.controldegastos.app.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.controldegastos.app.ui.PantallaLogin
-import com.controldegastos.app.ui.PantallaRegistro
-import com.controldegastos.app.ui.PantallaPrincipal
-import com.controldegastos.app.ui.PantallaIngresoGastos
-import com.controldegastos.app.ui.PantallaHistorialGastos
+import androidx.navigation.compose.rememberNavController
+import com.controldegastos.app.screens.LoginScreen
+import com.controldegastos.app.screens.PantallaHistorialGastos
+import com.controldegastos.app.screens.PantallaIngresoGastos
+import com.controldegastos.app.screens.RegistroScreen
 
 @Composable
-fun AppNavigation(navController: NavHostController) {
+fun AppNavigation() {
+
+    val navController = rememberNavController()
 
     NavHost(
         navController = navController,
         startDestination = "login"
     ) {
 
-        // LOGIN
         composable("login") {
-            PantallaLogin(
-                irARegistro = { navController.navigate("registro") },
-                irAInicio = {
-                    navController.navigate("pantallaPrincipal") {
-                        popUpTo("login") { inclusive = true }
-                    }
-                }
-            )
+            LoginScreen(navController)
         }
 
-        // REGISTRO
         composable("registro") {
-            PantallaRegistro(
-                volverALogin = { navController.navigate("login") }
-            )
+            RegistroScreen(navController)
         }
 
-        // PANTALLA PRINCIPAL
-        composable("pantallaPrincipal") {
-            PantallaPrincipal(
-                irIngreso = { navController.navigate("ingreso") },
-                irHistorial = { navController.navigate("historial") }
-            )
-        }
-
-        // INGRESO DE GASTOS
         composable("ingreso") {
-            PantallaIngresoGastos(
-                irHistorial = { navController.navigate("historial") }
-            )
+            PantallaIngresoGastos(navController)
         }
 
-        // HISTORIAL
         composable("historial") {
-            PantallaHistorialGastos(
-                volver = { navController.popBackStack() }
-            )
+            PantallaHistorialGastos(navController)
         }
     }
 }
