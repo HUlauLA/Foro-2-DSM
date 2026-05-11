@@ -4,27 +4,24 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable
-fun PantallaLogin(
-    irARegistro: () -> Unit,
-    irAInicio: () -> Unit
-) {
+fun PantallaLogin(navController: NavController) {
 
     val auth = FirebaseAuth.getInstance()
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-
-    var mensajeError by remember { mutableStateOf<String?>(null) }
+    var mensaje by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(20.dp),
+        verticalArrangement = Arrangement.Center
     ) {
 
         Text(
@@ -32,62 +29,56 @@ fun PantallaLogin(
             style = MaterialTheme.typography.headlineMedium
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
-        // Email
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
-            label = { Text("Correo electrónico") },
+            label = { Text("Correo") },
             modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
-        // Contraseña
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
             label = { Text("Contraseña") },
-            modifier = Modifier.fillMaxWidth(),
-            visualTransformation = PasswordVisualTransformation()
+            modifier = Modifier.fillMaxWidth()
         )
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        // Botón iniciar sesión
         Button(
             onClick = {
+
                 auth.signInWithEmailAndPassword(email, password)
                     .addOnSuccessListener {
-                        irAInicio()
+                        navController.navigate("principal")
                     }
                     .addOnFailureListener {
-                        mensajeError = "Correo o contraseña incorrectos"
+                        mensaje = it.message.toString()
                     }
+
             },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Ingresar")
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
-        // Botón ir a registro
-        TextButton(
-            onClick = { irARegistro() },
+        Button(
+            onClick = {
+                navController.navigate("registro")
+            },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Crear una cuenta")
+            Text("Registrarse")
         }
 
-        // Mostrar error
-        mensajeError?.let {
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(
-                text = it,
-                color = MaterialTheme.colorScheme.error
-            )
-        }
+        Spacer(modifier = Modifier.height(10.dp))
+
+        Text(text = mensaje)
     }
 }
