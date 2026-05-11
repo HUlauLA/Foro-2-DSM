@@ -1,4 +1,4 @@
-package com.controldegastos.app.screens
+package com.controldegastos.app.ui
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -6,15 +6,15 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.controldegastos.app.firebase.AuthManager
-import com.controldegastos.app.firebase.FirestoreManager
-import com.controldegastos.app.model.Gasto
+import com.controldegastos.app.modelo.Gasto
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 @Composable
 fun PantallaIngresoGastos(navController: NavController) {
 
-    val firestoreManager = FirestoreManager()
-    val authManager = AuthManager()
+    val db = FirebaseFirestore.getInstance()
+    val auth = FirebaseAuth.getInstance()
 
     var nombre by remember { mutableStateOf("") }
     var monto by remember { mutableStateOf("") }
@@ -24,12 +24,15 @@ fun PantallaIngresoGastos(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(20.dp)
     ) {
 
-        Text(text = "Agregar Gasto")
+        Text(
+            text = "Agregar Gasto",
+            style = MaterialTheme.typography.headlineMedium
+        )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
         OutlinedTextField(
             value = nombre,
@@ -37,7 +40,7 @@ fun PantallaIngresoGastos(navController: NavController) {
             label = { Text("Nombre") }
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         OutlinedTextField(
             value = monto,
@@ -45,7 +48,7 @@ fun PantallaIngresoGastos(navController: NavController) {
             label = { Text("Monto") }
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         OutlinedTextField(
             value = categoria,
@@ -53,7 +56,39 @@ fun PantallaIngresoGastos(navController: NavController) {
             label = { Text("Categoría") }
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         OutlinedTextField(
-            val
+            value = fecha,
+            onValueChange = { fecha = it },
+            label = { Text("Fecha") }
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Button(
+            onClick = {
+
+                val gasto = Gasto(
+                    nombre,
+                    monto.toDouble(),
+                    categoria,
+                    fecha,
+                    auth.currentUser?.uid ?: ""
+                )
+
+                db.collection("gastos")
+                    .add(gasto)
+
+                nombre = ""
+                monto = ""
+                categoria = ""
+                fecha = ""
+
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Guardar")
+        }
+    }
+}
