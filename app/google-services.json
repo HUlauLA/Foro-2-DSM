@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "764721253540",
+    "project_id": "controldegastos-d9803",
+    "storage_bucket": "controldegastos-d9803.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:764721253540:android:e49c43814eac51aa6a6a31",
+        "android_client_info": {
+          "package_name": "com.controldegastos.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1pMM98u1tE5V1JiMeV28uccjMSi_nTvQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
