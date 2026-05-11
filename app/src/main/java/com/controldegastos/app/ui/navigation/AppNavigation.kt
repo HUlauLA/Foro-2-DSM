@@ -1,13 +1,8 @@
-package com.controldegastos.app.navigation
+package com.controldegastos.app.ui.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import com.controldegastos.app.screens.LoginScreen
-import com.controldegastos.app.screens.PantallaHistorialGastos
-import com.controldegastos.app.screens.PantallaIngresoGastos
-import com.controldegastos.app.screens.RegistroScreen
+import androidx.navigation.compose.*
+import com.controldegastos.app.ui.*
 
 @Composable
 fun AppNavigation() {
@@ -20,11 +15,15 @@ fun AppNavigation() {
     ) {
 
         composable("login") {
-            LoginScreen(navController)
+            PantallaLogin(navController)
         }
 
         composable("registro") {
-            RegistroScreen(navController)
+            PantallaRegistro(navController)
+        }
+
+        composable("principal") {
+            PantallaPrincipal(navController)
         }
 
         composable("ingreso") {
